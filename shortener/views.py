@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.urls import reverse
 
@@ -12,10 +12,9 @@ def index_view(request):
     template = 'shortener/index.html'
 
     context = dict()
-    context['form'] = ShortenerForm
-
+    context['form'] = ShortenerForm()
     if request.method == 'GET':
-        return render(request, template, context)
+        used_form = ShortenerForm()
     elif request.method == 'POST':
         used_form = ShortenerForm(request.POST)
 
@@ -28,10 +27,11 @@ def index_view(request):
 
             context['new_url'] = new_url
             context['long_url'] = long_url
+            context['form'] = ShortenerForm()
             return render(request, template, context)
 
         context['errors'] = used_form.errors
-        return render(request, template, context)
+    return render(request, template, context)
 
 
 def redirect_short_url_view(request, shortened_url_part):
@@ -41,6 +41,5 @@ def redirect_short_url_view(request, shortened_url_part):
         shortener_obj.save()
 
         return HttpResponseRedirect(shortener_obj.long_url)
-
     except:
         return Http404('This link is invalid :(')

@@ -3,7 +3,7 @@ from django.urls import path
 
 from .views import index_view, redirect_short_url_view
 
-appname = 'shortener'
+app_name = 'shortener'
 
 urlpatterns = [
     path('', index_view, name='index'),
